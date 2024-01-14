@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Tests\Helpers\ActionLogin;
+use VenderaTradingCompany\PHPActions\Action;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::post('/login', function () {
+    $response = Action::run(ActionLogin::class);
+
+    if (empty($response->getData('result'))) {
+        return response()->json([
+            'logged_in' => false,
+            'session_id' => $response->getData('session_id')
+        ]);
+    }
+
+    return response()->json([
+        'logged_in' => true,
+        'session_id' => $response->getData('session_id')
+    ]);
+})->name('login');
