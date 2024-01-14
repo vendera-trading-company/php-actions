@@ -6,7 +6,7 @@ abstract class Action
 {
     private $data = [];
 
-    /** Secured keys are only passed between actions and ignore data from request */
+    /** Secured values can only be transferred internally. Values from user requests are ignored */
     protected $secure = [];
 
     /** Converts data */
@@ -15,13 +15,23 @@ abstract class Action
     /** Validates data */
     protected $validator = [];
 
-    public function __construct(array $data = [])
+    /** Action id */
+    private string | null $id;
+
+    public function __construct(array $data = [], string | null $id = null)
     {
         $this->data = $data;
+        $this->id = $id;
+    }
+
+    public function id(): string | null
+    {
+        return $this->id;
     }
 
     public abstract function handle();
 
+    /** Called if validation failed, an empty value or a Boolean 'False' value was returned */
     public function error()
     {
     }
@@ -124,6 +134,7 @@ abstract class Action
         return null;
     }
 
+    /** Validates all values for this action. Converted values are also validated */
     public function validate()
     {
         foreach ($this->validator as $key => $value) {
@@ -157,9 +168,19 @@ abstract class Action
         return true;
     }
 
-    public static function run(mixed $action, array $data = [], bool $run_synced = false): Response
+    public static function action(mixed $action_class): Builder
     {
-        $action_class = (new $action($data));
+        return new Builder($action_class);
+    }
+
+    public static function run(mixed $action, array $data = []): Response
+    {
+        if ($action instanceof Action) {
+            $action_class = $action;
+            $action = $action::class;
+        } else {
+            $action_class = (new $action($data));
+        }
 
         $response = null;
 
@@ -181,8 +202,9 @@ abstract class Action
             }
         }
 
+        /** Actions can also be executed asynchronously in conjunction with Laravel. */
         if ($response->isDone() && method_exists($action, 'dispatchJob')) {
-            $action_class->dispatchJob($response->getData(), $run_synced);
+            $action_class->dispatchJob($response->getData());
 
             return Response::done($action, $response);
         }
