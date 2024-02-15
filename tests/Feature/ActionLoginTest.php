@@ -62,7 +62,7 @@ class ActionLoginTest extends TestCase
         $password = 'wrong_password';
 
         $response = $this->post(route('login'), [
-            'email' => $email,
+            'email' => $email, 
             'password' => $password
         ]);
 
