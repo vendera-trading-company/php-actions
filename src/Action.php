@@ -37,7 +37,7 @@ abstract class Action
         return [];
     }
 
-    public function _getConverted($converter_class): mixed
+    public function _getConverted(mixed $converter_class): mixed
     {
         $converter_data = [];
 
@@ -88,21 +88,21 @@ abstract class Action
         return $data;
     }
 
-    public function setId($id): static
+    public function setId(string | null $id): static
     {
         $this->_id = $id;
 
         return $this;
     }
 
-    public function setOptions($options): static
+    public function setOptions(array | null $options): static
     {
         $this->options = $options;
 
         return $this;
     }
 
-    public function setData($data): static
+    public function setData(array | null $data): static
     {
         $this->data = $data;
 
@@ -124,7 +124,7 @@ abstract class Action
         return $result;
     }
 
-    private function shouldReturnValue($value)
+    private function shouldReturnValue(mixed $value)
     {
         if (is_bool($value)) {
             return true;

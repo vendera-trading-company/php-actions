@@ -18,7 +18,7 @@ abstract class Converter
         return $this->data[$key] ?? null;
     }
 
-    public static function run($converter, array $data = [])
+    public static function run(mixed $converter, array $data = [])
     {
         $converter_class = (new $converter($data));
 

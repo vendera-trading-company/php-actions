@@ -31,7 +31,7 @@ class Builder
         return $this;
     }
 
-    public function data($data): self
+    public function data(array | null $data): self
     {
         $this->_data = $data;
 
