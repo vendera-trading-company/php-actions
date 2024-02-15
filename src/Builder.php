@@ -4,7 +4,7 @@ namespace VenderaTradingCompany\PHPActions;
 
 class Builder
 {
-    private mixed $_id;
+    private mixed $_id = null;
 
     private mixed $action_class;
 
