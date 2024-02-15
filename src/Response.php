@@ -8,19 +8,19 @@ class Response
     private string $status;
     private string $action;
 
-    public function __construct(string $action, mixed $data, string $status)
+    public function __construct(mixed $action, mixed $data, string $status)
     {
         $this->action = $action;
         $this->data = $data;
         $this->status = $status;
     }
 
-    public static function done($action, mixed $data = null): Response
+    public static function done(mixed $action, mixed $data = null): Response
     {
         return new Response($action, $data, 'done');
     }
 
-    public static function error($action, mixed $data = null): Response
+    public static function error(mixed $action, mixed $data = null): Response
     {
         return new Response($action, $data, 'error');
     }
@@ -43,7 +43,7 @@ class Response
         return $this->status == 'done';
     }
 
-    public function action(): string
+    public function action(): mixed
     {
         return $this->action;
     }
