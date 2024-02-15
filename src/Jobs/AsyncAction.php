@@ -8,29 +8,22 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 
 abstract class AsyncAction implements ShouldBeUnique, ShouldQueue
 {
-    protected array | null $data = [];
-    protected string $action_class = '';
-    protected string | null $action_id = '';
+    protected array $_data = [];
 
-    public function __construct(string $action_class, array | null $data = [], string | null $action_id = null)
+    public function __construct(array | null $data = [])
     {
-        $this->data = $data;
-        $this->action_class = $action_class;
-        $this->action_id = $action_id;
-    }
-
-    public function getActionId(): string | null
-    {
-        return $this->action_id;
+        $this->_data = $data ?? [];
     }
 
     public function getData(string $key): mixed
     {
-        return $this->data[$key] ?? null;
+        $data = $this->_data['data'] ?? [];
+
+        return $data[$key] ?? null;
     }
 
-    public function getActionClass(): string | null
+    public function data(): array
     {
-        return $this->action_class;
+        return $this->_data;
     }
 }

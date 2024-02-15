@@ -6,6 +6,8 @@ abstract class Action
 {
     private $data = [];
 
+    private $options = [];
+
     /** Secured values can only be transferred internally. Values from user requests are ignored */
     protected $secure = [];
 
@@ -16,17 +18,11 @@ abstract class Action
     protected $validator = [];
 
     /** Action id */
-    private string | null $id;
-
-    public function __construct(array $data = [], string | null $id = null)
-    {
-        $this->data = $data;
-        $this->id = $id;
-    }
+    private string | null $_id;
 
     public function id(): string | null
     {
-        return $this->id;
+        return $this->_id;
     }
 
     public abstract function handle();
@@ -41,7 +37,7 @@ abstract class Action
         return [];
     }
 
-    public function _getConverted($converter_class)
+    public function _getConverted($converter_class): mixed
     {
         $converter_data = [];
 
@@ -92,6 +88,42 @@ abstract class Action
         return $data;
     }
 
+    public function setId($id): static
+    {
+        $this->_id = $id;
+
+        return $this;
+    }
+
+    public function setOptions($options): static
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    public function setData($data): static
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function getOption(string $option): mixed
+    {
+        $result = $this->options[$option] ?? null;
+
+        if (is_bool($result)) {
+            return $result;
+        }
+
+        if ($result == null) {
+            return $result;
+        }
+
+        return $result;
+    }
+
     private function shouldReturnValue($value)
     {
         if (is_bool($value)) {
@@ -140,79 +172,27 @@ abstract class Action
         foreach ($this->validator as $key => $value) {
             $data = $this->getData($key);
 
-            if ($value == 'required') {
-                if (is_numeric($data)) {
-                    if ($data == 0) {
-                        continue;
-                    }
-                }
+            $result = Validator::run($value, $data);
 
-                if (is_string($data)) {
-                    if ($data == '') {
-                        continue;
-                    }
-                }
-
-                if (is_array($data)) {
-                    if (count($data) == 0) {
-                        continue;
-                    }
-                }
-
-                if (empty($data)) {
-                    return false;
-                }
+            if (!$result) {
+                return false;
             }
         }
 
         return true;
     }
 
-    public static function action(mixed $action_class): Builder
+    public static function build(mixed $action): Builder
     {
-        return new Builder($action_class);
+        return new Builder($action);
     }
 
     public static function run(mixed $action, array $data = []): Response
     {
-        if ($action instanceof Action) {
-            $action_class = $action;
-            $action = $action::class;
-        } else {
-            $action_class = (new $action($data));
-        }
-
-        $response = null;
-
-        if ($action_class->validate()) {
-            $response = $action_class->handle();
-        } else {
-            $response = $action_class->error();
-        }
-
-        $response = self::parse_action_handle_response($action, $response);
-
-        if (!$response->isDone()) {
-            $errorResponse = $action_class->error();
-
-            $errorResponse = self::parse_action_error_response($action, $errorResponse);
-
-            if (!empty($errorResponse)) {
-                $response = $errorResponse;
-            }
-        }
-
-        /** Actions can also be executed asynchronously in conjunction with Laravel. */
-        if ($response->isDone() && method_exists($action, 'dispatchJob')) {
-            $action_class->dispatchJob($response->getData());
-
-            return Response::done($action, $response);
-        }
-
-        return $response;
+        return static::build($action)->data($data)->run();
     }
 
-    private static function parse_action_handle_response($action, $response)
+    public static function parse_action_handle_response($action, $response)
     {
         if (empty($response)) {
             $response = Response::error($action, $response);
@@ -227,7 +207,7 @@ abstract class Action
         return $response;
     }
 
-    private static function parse_action_error_response($action, $response)
+    public static function parse_action_error_response($action, $response)
     {
         if (empty($response)) {
             return null;

@@ -4,36 +4,50 @@ namespace VenderaTradingCompany\PHPActions;
 
 class Builder
 {
-    private mixed $id;
+    private mixed $_id;
 
-    private mixed $action;
+    private mixed $action_class;
 
-    public function __construct(mixed $action_class = null) {
-        $this->action = $action_class;
+    private mixed $_options = [];
+
+    private mixed $_data = [];
+
+    public function __construct(mixed $action_class = null)
+    {
+        $this->action_class = $action_class;
     }
 
     public function id(string $id): self
     {
-        $this->id = $id;
+        $this->_id = $id;
 
         return $this;
     }
 
-    public function action(mixed $action): self
+    public function options(array $options): self
     {
-        $this->action = $action;
+        $this->_options = $options;
 
         return $this;
     }
 
-    public function run(array $data = []): Response
+    public function data($data): self
     {
-        $action = $this->action;
+        $this->_data = $data;
 
-        $id = $this->id;
+        return $this;
+    }
 
-        $action_class = (new $action($data, $id));
+    public function run(): Response
+    {
+        $action_class = $this->action_class;
 
-        return Action::run($action_class);
+        $action = (new $action_class());
+
+        $action->setData($this->_data);
+        $action->setId($this->_id);
+        $action->setOptions($this->_options);
+
+        return Run::action($action);
     }
 }

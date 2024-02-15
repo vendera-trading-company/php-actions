@@ -15,8 +15,11 @@ trait RunsAsync
 
     public function dispatchJob(array | null $data = [])
     {
-        $action_class = static::class;
-
-        return BaseAsyncAction::dispatch($action_class, $data, $this->id());
+        return BaseAsyncAction::dispatch([
+            'class' => $this->class,
+            'data' => $data,
+            'id' => $this->_id,
+            'options' => $this->options
+        ]);
     }
 }
