@@ -6,7 +6,7 @@ class Response
 {
     private mixed $data = null;
     private string $status;
-    private string $action;
+    private mixed $action;
 
     public function __construct(mixed $action, mixed $data, string $status)
     {
