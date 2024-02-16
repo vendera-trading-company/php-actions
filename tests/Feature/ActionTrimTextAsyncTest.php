@@ -16,9 +16,9 @@ class ActionTrimTextAsyncTest extends TestCase
 
         Queue::fake();
 
-        Action::run(ActionTrimTextAsync::class, [
+        Action::build(ActionTrimTextAsync::class)->data([
             'text' => $text,
-        ]);
+        ])->run();
 
         Queue::assertPushed(function (BaseAsyncAction $job) {
             return $job->data()['class'] == ActionTrimTextAsync::class;
@@ -35,12 +35,14 @@ class ActionTrimTextAsyncTest extends TestCase
 
         $expected_id = ActionTrimTextAsync::class . '_' . $id;
 
-        Action::build(ActionTrimTextAsync::class)->id($id)->run([
+        Action::build(ActionTrimTextAsync::class)->id($id)->data([
             'text' => $text,
-        ]);
+        ])->run();
 
         Queue::assertPushed(function (BaseAsyncAction $job) use ($expected_id) {
-            return $job->data()['id'] == $expected_id;
+            $this->assertEquals($expected_id, $job->uniqueId());
+
+            return $job->uniqueId() == $expected_id;
         });
     }
 }

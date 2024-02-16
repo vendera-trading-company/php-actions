@@ -15,10 +15,10 @@ class ActionMultiplyNumberTest extends TestCase
 
         $result = $number * $multiplier;
 
-        $response = Action::run(ActionMultiplyNumber::class, [
+        $response = Action::build(ActionMultiplyNumber::class)->data([
             'number' => $number,
             'multiplier' => $multiplier
-        ]);
+        ])->run();
 
         $result_number = $response->getData('result');
 

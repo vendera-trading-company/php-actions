@@ -13,9 +13,9 @@ class ActionTrimTextTest extends TestCase
         $text = ' Test String ';
         $trimmed_text = trim($text);
 
-        $response = Action::run(ActionTrimText::class, [
+        $response = Action::build(ActionTrimText::class)->data([
             'text' => $text,
-        ]);
+        ])->run();
 
         $result_text = $response->getData('result');
 
@@ -26,9 +26,9 @@ class ActionTrimTextTest extends TestCase
     {
         $text = null;
 
-        $response = Action::run(ActionTrimText::class, [
+        $response = Action::build(ActionTrimText::class)->data([
             'text' => $text,
-        ]);
+        ])->run();
 
         $result_text = $response->getData('result');
 
