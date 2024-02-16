@@ -54,6 +54,70 @@ class ActionTrimTextTest extends TestCase
         $this->assertEquals($trimmed_text, $result_text);
     }
 
+    public function testResultIsCorrectWithOptionLeft()
+    {
+        $text = ' Test String ';
+        $trimmed_text = ltrim($text);
+
+        $response = Action::build(ActionTrimText::class)->data([
+            'text' => $text,
+        ])->options([
+            'trim' => 'left'
+        ])->run();
+
+        $result_text = $response->getData('result');
+
+        $this->assertEquals($trimmed_text, $result_text);
+    }
+
+    public function testResultIsCorrectWithOptionRight()
+    {
+        $text = ' Test String ';
+        $trimmed_text = rtrim($text);
+
+        $response = Action::build(ActionTrimText::class)->data([
+            'text' => $text,
+        ])->options([
+            'trim' => 'right'
+        ])->run();
+
+        $result_text = $response->getData('result');
+
+        $this->assertEquals($trimmed_text, $result_text);
+    }
+
+    public function testResultIsCorrectWithOptionAll()
+    {
+        $text = ' Test String ';
+        $trimmed_text = trim($text);
+
+        $response = Action::build(ActionTrimText::class)->data([
+            'text' => $text,
+        ])->options([
+            'trim' => 'all'
+        ])->run();
+
+        $result_text = $response->getData('result');
+
+        $this->assertEquals($trimmed_text, $result_text);
+    }
+
+    public function testResultIsCorrectWithWrongOption()
+    {
+        $text = ' Test String ';
+        $trimmed_text = trim($text);
+
+        $response = Action::build(ActionTrimText::class)->data([
+            'text' => $text,
+        ])->options([
+            'trim' => 'wrong_option'
+        ])->run();
+
+        $result_text = $response->getData('result');
+
+        $this->assertEquals($trimmed_text, $result_text);
+    }
+
     public function testResultIsCorrectOnEmptyInput()
     {
         $text = null;
