@@ -31,12 +31,16 @@ class ActionTrimTextAsyncTest extends TestCase
 
         Queue::fake();
 
-        Action::build(ActionTrimTextAsync::class)->id('some_id')->run([
+        $id = 'some_id';
+
+        $expected_id = ActionTrimTextAsync::class . '_' . $id;
+
+        Action::build(ActionTrimTextAsync::class)->id($id)->run([
             'text' => $text,
         ]);
 
-        Queue::assertPushed(function (BaseAsyncAction $job) {
-            return $job->data()['id'] == ActionTrimTextAsync::class . '_some_id';
+        Queue::assertPushed(function (BaseAsyncAction $job) use ($expected_id) {
+            return $job->data()['id'] == $expected_id;
         });
     }
 }

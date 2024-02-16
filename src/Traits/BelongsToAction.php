@@ -6,24 +6,24 @@ trait BelongsToAction
 {
     public function uniqueId(): string
     {
-        $id = $this->_data['id'] ?? null;
+        $id = $this->data()['id'] ?? null;
 
         if (empty($id)) {
-            return $this->_data['class'];
+            return $this->data()['class'];
         }
 
-        return $this->_data['class'] . '_' . $id;
+        return $this->data()['class'] . '_' . $id;
     }
 
     public function handle()
     {
-        $action_class = $this->_data['class'];
+        $action_class = $this->data()['class'];
 
         $action = (new $action_class());
 
-        $action->setId($this->_data['id'] ?? null);
-        $action->setData($this->_data['data'] ?? []);
-        $action->setOptions($this->_data['options'] ?? []);
+        $action->setId($this->data()['id'] ?? null);
+        $action->setData($this->data()['data'] ?? []);
+        $action->setOptions($this->data()['options'] ?? []);
 
         return $action->handleAsync();
     }

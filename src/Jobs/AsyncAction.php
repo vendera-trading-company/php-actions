@@ -17,7 +17,7 @@ abstract class AsyncAction implements ShouldBeUnique, ShouldQueue
 
     public function getData(string $key): mixed
     {
-        $data = $this->_data['data'] ?? [];
+        $data = $this->data()['data'] ?? [];
 
         return $data[$key] ?? null;
     }
