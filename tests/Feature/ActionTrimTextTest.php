@@ -22,6 +22,38 @@ class ActionTrimTextTest extends TestCase
         $this->assertEquals($trimmed_text, $result_text);
     }
 
+    public function testResultIsCorrectWithOptionUppercase()
+    {
+        $text = ' Test String ';
+        $trimmed_text = strtoupper(trim($text));
+
+        $response = Action::build(ActionTrimText::class)->data([
+            'text' => $text,
+        ])->options([
+            'uppercase' => true
+        ])->run();
+
+        $result_text = $response->getData('result');
+
+        $this->assertEquals($trimmed_text, $result_text);
+    }
+
+    public function testResultIsCorrectWithOptionLowercase()
+    {
+        $text = ' Test String ';
+        $trimmed_text = strtolower(trim($text));
+
+        $response = Action::build(ActionTrimText::class)->data([
+            'text' => $text,
+        ])->options([
+            'lowercase' => true
+        ])->run();
+
+        $result_text = $response->getData('result');
+
+        $this->assertEquals($trimmed_text, $result_text);
+    }
+
     public function testResultIsCorrectOnEmptyInput()
     {
         $text = null;

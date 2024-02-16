@@ -119,6 +119,11 @@ abstract class Action
         return $result;
     }
 
+    public function matchOption(string $option, mixed $expected): bool
+    {
+        return $this->getOption($option) == $expected;
+    }
+
     private function shouldReturnValue(mixed $value)
     {
         if (is_bool($value)) {
