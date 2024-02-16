@@ -36,7 +36,7 @@ class ActionTrimTextAsyncTest extends TestCase
         ]);
 
         Queue::assertPushed(function (BaseAsyncAction $job) {
-            return $job->data()['id'] == 'some_id';
+            return $job->data()['id'] == ActionTrimTextAsync::class . '_some_id';
         });
     }
 }
