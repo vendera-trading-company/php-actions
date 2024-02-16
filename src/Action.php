@@ -104,7 +104,7 @@ abstract class Action
         return $this;
     }
 
-    public function getOption(string $option): mixed
+    public function getOption(string $option, mixed $default = null): mixed
     {
         $result = $this->options[$option] ?? null;
 
@@ -113,15 +113,15 @@ abstract class Action
         }
 
         if ($result == null) {
-            return $result;
+            return $default;
         }
 
         return $result;
     }
 
-    public function matchOption(string $option, mixed $expected): bool
+    public function matchOption(string $option, mixed $expected, mixed $default = null): bool
     {
-        return $this->getOption($option) == $expected;
+        return $this->getOption($option, $default) == $expected;
     }
 
     private function shouldReturnValue(mixed $value)
