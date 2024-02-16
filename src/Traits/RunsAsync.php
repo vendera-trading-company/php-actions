@@ -18,7 +18,7 @@ trait RunsAsync
         return BaseAsyncAction::dispatch([
             'class' => $this::class,
             'data' => $data,
-            'id' => $this->_id,
+            'id' => $this->id,
             'options' => $this->options
         ]);
     }

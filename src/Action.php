@@ -6,7 +6,7 @@ abstract class Action
 {
     private $data = [];
 
-    private $options = [];
+    public $options = [];
 
     /** Secured values can only be transferred internally. Values from user requests are ignored */
     protected $secure = [];
@@ -18,12 +18,7 @@ abstract class Action
     protected $validator = [];
 
     /** Action id */
-    private string | null $_id;
-
-    public function id(): string | null
-    {
-        return $this->_id;
-    }
+    public string | null $id;
 
     public abstract function handle();
 
@@ -90,7 +85,7 @@ abstract class Action
 
     public function setId(string | null $id): static
     {
-        $this->_id = $id;
+        $this->id = $id;
 
         return $this;
     }
