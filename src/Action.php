@@ -4,9 +4,14 @@ namespace VenderaTradingCompany\PHPActions;
 
 abstract class Action
 {
-    private $data = [];
+    /** Data */
+    private $_data = [];
 
-    public $options = [];
+    /** Options */
+    public $_options = [];
+
+    /** Available options */
+    protected $options = [];
 
     /** Secured values can only be transferred internally. Values from user requests are ignored */
     protected $secure = [];
@@ -92,21 +97,29 @@ abstract class Action
 
     public function setOptions(array | null $options): static
     {
-        $this->options = $options;
+        $this->_options = $options;
 
         return $this;
     }
 
     public function setData(array | null $data): static
     {
-        $this->data = $data;
+        $this->_data = $data;
 
         return $this;
     }
 
     public function getOption(string $option, mixed $default = null): mixed
     {
-        $result = $this->options[$option] ?? null;
+        $result = $this->_options[$option] ?? null;
+
+        if (array_key_exists($option, $this->options)) {
+            $expected = $this->options[$option];
+
+            if (!in_array($result, $expected)) {
+                return $default ?? $expected[0];
+            }
+        }
 
         if (is_bool($result)) {
             return $result;
@@ -143,7 +156,7 @@ abstract class Action
             return $this->_getConverted($key);
         }
 
-        $value = $this->data[$key] ?? null;
+        $value = $this->_data[$key] ?? null;
 
         if ($this->shouldReturnValue($value)) {
             return $value;

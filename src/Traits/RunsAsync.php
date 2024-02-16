@@ -19,7 +19,7 @@ trait RunsAsync
             'class' => static::class,
             'data' => $data,
             'id' => $this->id,
-            'options' => $this->options
+            'options' => $this->_options
         ]);
     }
 }
